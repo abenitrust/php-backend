@@ -36,7 +36,7 @@ const add = (req, res) => {
 
     userModel.save((err, _) => {
         if(err) {
-            helper.serverErrorMsg({res});
+            helper.serverErrorMsg({res, msg: `Error occurred, ${err}`});
         } else {
             helper.successMsg({res, msg: "Part successfully created!"});
         }
