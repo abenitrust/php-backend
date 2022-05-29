@@ -55,21 +55,37 @@ const remove = (req, res) => {
     });
 }
 
-const update = (req, res, overwrite=true) => {
+const update = (req, res, _, overwrite=true) => {
     const partId = req.params.partId;
-    const userModel = new partsModel(req.body);
-    userModel.set({_id: partId});
-    partsModel.findByIdAndUpdate(partId, userModel,  { overwrite }, (err, _) => {
+    partsModel.findById(partId, (err, existingModel) => {
         if(err) {
-            helper.serverErrorMsg({res});
+            helper.notFoundMsg({res});
         } else {
-            helper.successMsg({res, msg: "part successfully updated"});
+            // TODO: find a better way to update values using object destructuring 
+            // on the existingModel and save it. Had to resort to this hack because
+            // mongoose somehow nulls subDocuments during patch which doesn't want
+            // include a patch to subdocuments.
+            const userInput = req.body;
+            const existingData = existingModel.toObject();
+            let updateData = userInput;
+            if(overwrite === false) {
+                updateData = {...existingData, ...userInput};
+            }
+
+            partsModel.findByIdAndUpdate(partId, updateData, {overwrite, runValidators: true}, (err, _) => {
+                if(err) {
+                    helper.serverErrorMsg({res, msg: `Error occurred while updating. ${err}`});
+                } else {
+                    helper.successMsg({res, msg: "part successfully updated"});
+                }
+            })
+
         }
     });
 }
 
-const patch = (req, res) => {
-    update(req, res, overwrite=false);
+const patch = (req, res, next) => {
+    update(req, res, next,  overwrite=false);
 }
 
 

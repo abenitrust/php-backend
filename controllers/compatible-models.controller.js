@@ -79,7 +79,7 @@ const remove = async (req, res) => {
     });
 }
 
-const update = async (req, res, overwrite=true) => {
+const update = async (req, res, _ , overwrite=true) => {
     const part = await _findPart(req, res);
     if(part == null) {
         return;
@@ -104,8 +104,8 @@ const update = async (req, res, overwrite=true) => {
     });
 }
 
-const patch = (req, res) => {
-    update(req, res, overwrite=false);
+const patch = (req, res, next) => {
+    update(req, res, next, overwrite=false);
 }
 
 
