@@ -55,7 +55,11 @@ const add = async (req, res) => {
     part.compatibleModels.push(userModel);
     part.save((err, _) => {
         if(err) {
-            helper.serverErrorMsg({res, msg: "Problem occurred while adding compatibleModel to part."});
+            if(err instanceof mongoose.Error.ValidationError) {
+                helper.validationErrorMsg({res, msg: err});
+            } else {
+                helper.serverErrorMsg({res, msg: "Problem occurred while adding compatibleModel to part."});
+            }
         } else {
             helper.successMsg({res, msg: "Compatible model successfully added to part!"});
         }
@@ -72,7 +76,11 @@ const remove = async (req, res) => {
     part.compatibleModels.id(carModelId).remove();
     part.save((err, _) => {
         if(err) {
-            helper.serverErrorMsg({res, msg: "Problem occurred while removing compatibleModel to part."});
+            if(err instanceof mongoose.Error.ValidationError) {
+                helper.validationErrorMsg({res, msg: err});
+            } else {
+                helper.serverErrorMsg({res, msg: "Problem occurred while removing compatibleModel to part."});
+            }
         } else {
             helper.successMsg({res, msg: "Compatible model successfully removed!"});
         }
@@ -97,7 +105,11 @@ const update = async (req, res, _ , overwrite=true) => {
     existingModel.set(updateModel);
     part.save((err, _) => {
         if(err) {
-            helper.serverErrorMsg({res, msg: "Problem occurred while updating compatible model."});
+            if(err instanceof mongoose.Error.ValidationError) {
+                helper.validationErrorMsg({res, msg: err});
+            } else {
+                helper.serverErrorMsg({res, msg: "Problem occurred while updating compatible model."});
+            }
         } else {
             helper.successMsg({res, msg: "Compatible model successfully updated!"});
         }

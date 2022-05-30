@@ -42,9 +42,11 @@ const getNubmer = (source) => {
 const serverErrorDefaultMsg = "Internal server error occurred, please contact developers";
 const successDefaultMsg = "Success";
 const notFoundDefaultMsg = "Document by the given id is not found";
+const validationErrorDefaultMsg =  "Input validation error(s) occured.";
 const serverErrorDefaultCode = 500;
 const successDefaultCode = 200;
 const notFoundStatusCode = 404;
+const forbiddenRequestCode = 400;
 
 const serverErrorMsg = ({res, statusCode=serverErrorDefaultCode, msg=serverErrorDefaultMsg}) => {
     res.status(statusCode).send(msg);
@@ -58,6 +60,10 @@ const notFoundMsg = ({res, statusCode=notFoundStatusCode,  msg=notFoundDefaultMs
     res.status(statusCode).send(msg);
 }
 
+const validationErrorMsg = ({res, statusCode=forbiddenRequestCode,  msg=validationErrorDefaultMsg}) => {
+    res.status(statusCode).send(msg);
+}
+
 module.exports = {
     getCount,
     isString,
@@ -67,4 +73,5 @@ module.exports = {
     serverErrorMsg,
     successMsg,
     notFoundMsg,
+    validationErrorMsg
 }

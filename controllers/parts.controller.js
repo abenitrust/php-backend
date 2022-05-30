@@ -36,7 +36,11 @@ const add = (req, res) => {
 
     userModel.save((err, _) => {
         if(err) {
-            helper.serverErrorMsg({res, msg: `Error occurred, ${err}`});
+            if(err instanceof mongoose.Error.ValidationError) {
+                helper.validationErrorMsg({res, msg: err});
+            } else {
+                helper.serverErrorMsg({res, msg: `Error occurred, contact develoeprs`});
+            }
         } else {
             helper.successMsg({res, msg: "Part successfully created!"});
         }
@@ -74,7 +78,11 @@ const update = (req, res, _, overwrite=true) => {
 
             partsModel.findByIdAndUpdate(partId, updateData, {overwrite, runValidators: true}, (err, _) => {
                 if(err) {
-                    helper.serverErrorMsg({res, msg: `Error occurred while updating. ${err}`});
+                    if(err instanceof mongoose.Error.ValidationError) {
+                        helper.validationErrorMsg({res, msg: err});
+                    } else {
+                        helper.serverErrorMsg({res, msg: `Error occurred while updating. ${err}`});
+                    }
                 } else {
                     helper.successMsg({res, msg: "part successfully updated"});
                 }
